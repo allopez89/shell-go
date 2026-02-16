@@ -7,17 +7,17 @@ import (
 	"strings"
 )
 
+var allowed_commands map[string]func([]string)
+
 func main() {
 
+	allowed_commands = map[string]func(args []string){
+		"exit": command_exit,
+		"echo": command_echo,
+		"type": command_type,
+	}
+
 	for {
-
-		allowed_commands := map[string]func(args []string){
-			"exit": func(args []string) { os.Exit(0) },
-			"echo": func(args []string) {
-				fmt.Println(strings.Join(args, " "))
-			},
-		}
-
 		fmt.Print("$ ")
 
 		// Wait for user inputs
@@ -37,5 +37,19 @@ func main() {
 		} else {
 			fmt.Println(input_command + ": command not found")
 		}
+	}
+}
+
+func command_exit(args []string) { os.Exit(0) }
+
+func command_echo(args []string) {
+	fmt.Println(strings.Join(args, " "))
+}
+
+func command_type(args []string) {
+	if _, ok := allowed_commands[args[0]]; ok {
+		fmt.Println(args[0] + " is a shell builtin")
+	} else {
+		fmt.Println(args[0] + ": not found")
 	}
 }
