@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -47,9 +48,15 @@ func command_echo(args []string) {
 }
 
 func command_type(args []string) {
-	if _, ok := allowed_commands[args[0]]; ok {
+	switch _, ok := allowed_commands[args[0]]; ok {
+	case ok:
 		fmt.Println(args[0] + " is a shell builtin")
-	} else {
-		fmt.Println(args[0] + ": not found")
+	case !ok:
+		full_path, err := exec.LookPath(args[0])
+		if err != nil {
+			fmt.Println(args[0] + ": not found")
+		} else {
+			fmt.Println(args[0] + " is " + full_path)
+		}
 	}
 }
