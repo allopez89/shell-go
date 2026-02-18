@@ -48,15 +48,13 @@ func command_echo(args []string) {
 }
 
 func command_type(args []string) {
-	switch _, ok := allowed_commands[args[0]]; ok {
-	case ok:
+	if _, ok := allowed_commands[args[0]]; ok {
 		fmt.Println(args[0] + " is a shell builtin")
-	case !ok:
-		full_path, err := exec.LookPath(args[0])
-		if err != nil {
-			fmt.Println(args[0] + ": not found")
-		} else {
-			fmt.Println(args[0] + " is " + full_path)
-		}
+	}
+	full_path, err := exec.LookPath(args[0])
+	if err != nil {
+		fmt.Println(args[0] + ": not found")
+	} else {
+		fmt.Println(args[0] + " is " + full_path)
 	}
 }
