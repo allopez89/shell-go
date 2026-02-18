@@ -50,6 +50,7 @@ func command_echo(args []string) {
 func command_type(args []string) {
 	if _, ok := allowed_commands[args[0]]; ok {
 		fmt.Println(args[0] + " is a shell builtin")
+		return
 	}
 	full_path, err := exec.LookPath(args[0])
 	if err != nil {
