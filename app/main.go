@@ -37,7 +37,7 @@ func main() {
 			command_func := allowed_commands[input_command]
 			command_func(input_arguments)
 		} else if command_name, ok := is_executable(input_command); ok {
-			exec.Command(command_name, input_arguments...)
+			exec.Command(command_name, input_arguments...).Run()
 		} else {
 			fmt.Println(input_command + ": command not found")
 		}
