@@ -17,6 +17,7 @@ func main() {
 		"echo": command_echo,
 		"type": command_type,
 		"pwd":  command_pwd,
+		"cd":   command_cd,
 	}
 
 	for {
@@ -49,6 +50,7 @@ func main() {
 	}
 }
 
+// builtin commands
 func command_exit(args []string) { os.Exit(0) }
 
 func command_echo(args []string) {
@@ -77,6 +79,15 @@ func command_pwd(args []string) {
 	}
 }
 
+func command_cd(directory []string) {
+	err := os.Chdir(directory[0])
+	if err != nil {
+		fmt.Println("cd: " + directory[0] + ": No such file or directory")
+		return
+	}
+}
+
+// utils
 func is_builtin(command string) bool {
 	if _, ok := allowed_commands[command]; ok {
 		return true
