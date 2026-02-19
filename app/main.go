@@ -16,6 +16,7 @@ func main() {
 		"exit": command_exit,
 		"echo": command_echo,
 		"type": command_type,
+		"pwd":  command_pwd,
 	}
 
 	for {
@@ -65,6 +66,15 @@ func command_type(args []string) {
 		return
 	}
 	fmt.Println(args[0] + ": not found")
+}
+
+func command_pwd(args []string) {
+	working_dir, err := os.Getwd()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error retrieving directory: ", err)
+	} else {
+		fmt.Println(working_dir)
+	}
 }
 
 func is_builtin(command string) bool {
