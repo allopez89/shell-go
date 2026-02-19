@@ -80,9 +80,17 @@ func command_pwd(args []string) {
 }
 
 func command_cd(directory []string) {
-	err := os.Chdir(directory[0])
+	home_directory, _ := os.UserHomeDir()
+	var target string
+
+	if len(directory) == 0 || directory[0] == "~" {
+		target = home_directory
+	} else {
+		target = directory[0]
+	}
+	err := os.Chdir(target)
 	if err != nil {
-		fmt.Println("cd: " + directory[0] + ": No such file or directory")
+		fmt.Println("cd: " + target + ": No such file or directory")
 		return
 	}
 }
