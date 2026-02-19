@@ -120,7 +120,7 @@ func parseInput(input string) []string {
 
 	for _, r := range input {
 		switch r {
-		case '"':
+		case '\'':
 			inQuotes = !inQuotes
 
 		case ' ':
