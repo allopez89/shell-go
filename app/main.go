@@ -116,15 +116,21 @@ func is_executable(path string) (string, bool) {
 func parseInput(input string) []string {
 	var args []string
 	var current strings.Builder
-	inQuotes := false
+	var quoteChar rune = 0
 
 	for _, r := range input {
 		switch r {
-		case '\'':
-			inQuotes = !inQuotes
+		case '\'', '"':
+			if quoteChar == 0 {
+				quoteChar = r
+			} else if quoteChar == r {
+				quoteChar = 0
+			} else {
+				current.WriteRune(r)
+			}
 
 		case ' ':
-			if inQuotes {
+			if quoteChar != 0 {
 				current.WriteRune(r)
 			} else {
 				if current.Len() > 0 {
