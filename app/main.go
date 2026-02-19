@@ -117,9 +117,21 @@ func parseInput(input string) []string {
 	var args []string
 	var current strings.Builder
 	var quoteChar rune = 0
+	escaping := false
 
 	for _, r := range input {
+
+		if escaping {
+			current.WriteRune(r)
+			escaping = false
+			continue
+		}
+
 		switch r {
+
+		case '\\':
+			escaping = true
+
 		case '\'', '"':
 			if quoteChar == 0 {
 				quoteChar = r
