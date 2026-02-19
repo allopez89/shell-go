@@ -130,7 +130,11 @@ func parseInput(input string) []string {
 		switch r {
 
 		case '\\':
-			escaping = true
+			if quoteChar == '\'' {
+				current.WriteRune(r)
+			} else {
+				escaping = true
+			}
 
 		case '\'', '"':
 			if quoteChar == 0 {
