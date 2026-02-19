@@ -33,8 +33,11 @@ func main() {
 		input_command := parts[0]
 		input_arguments := parts[1:]
 
-		if command_func, ok := allowed_commands[input_command]; ok {
+		if is_builtin(input_command) {
+			command_func := allowed_commands[input_command]
 			command_func(input_arguments)
+		} else if command_name, ok := is_executable(input_command); ok {
+			exec.Command(command_name, input_arguments...)
 		} else {
 			fmt.Println(input_command + ": command not found")
 		}
@@ -48,14 +51,31 @@ func command_echo(args []string) {
 }
 
 func command_type(args []string) {
-	if _, ok := allowed_commands[args[0]]; ok {
+	if is_builtin(args[0]) {
 		fmt.Println(args[0] + " is a shell builtin")
 		return
 	}
-	full_path, err := exec.LookPath(args[0])
-	if err != nil {
-		fmt.Println(args[0] + ": not found")
+
+	if command_path, ok := is_executable(args[0]); ok {
+		fmt.Println(args[0] + " is " + command_path)
+		return
+	}
+	fmt.Println(args[0] + ": not found")
+}
+
+func is_builtin(command string) bool {
+	if _, ok := allowed_commands[command]; ok {
+		return true
 	} else {
-		fmt.Println(args[0] + " is " + full_path)
+		return false
+	}
+}
+
+func is_executable(path string) (string, bool) {
+	full_path, err := exec.LookPath(path)
+	if err != nil {
+		return "", false
+	} else {
+		return full_path, true
 	}
 }
