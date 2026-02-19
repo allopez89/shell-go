@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -54,7 +55,13 @@ func main() {
 func command_exit(args []string) { os.Exit(0) }
 
 func command_echo(args []string) {
-	fmt.Println(strings.Join(args, " "))
+	echo, err := strconv.Unquote(strings.Join(args, " "))
+	if err != nil {
+		fmt.Println(strings.Join(args, " "))
+	} else {
+		fmt.Println(echo)
+	}
+
 }
 
 func command_type(args []string) {
