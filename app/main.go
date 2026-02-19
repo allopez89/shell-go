@@ -37,7 +37,8 @@ func main() {
 			command_func := allowed_commands[input_command]
 			command_func(input_arguments)
 		} else if command_name, ok := is_executable(input_command); ok {
-			cmd := exec.Command(command_name, input_arguments...)
+			cmd := exec.Command(command_name)
+			cmd.Args = parts
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
 			cmd.Run()
