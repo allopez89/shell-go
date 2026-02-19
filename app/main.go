@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strconv"
 	"strings"
 )
 
@@ -31,7 +30,7 @@ func main() {
 			os.Exit(1)
 		}
 		input := strings.TrimSpace(command)
-		parts := strings.Fields(input)
+		parts := parseInput(input)
 
 		input_command := parts[0]
 		input_arguments := parts[1:]
@@ -55,13 +54,7 @@ func main() {
 func command_exit(args []string) { os.Exit(0) }
 
 func command_echo(args []string) {
-	echo, err := strconv.Unquote(strings.Join(args, " "))
-	if err != nil {
-		fmt.Println(strings.Join(args, " "))
-	} else {
-		fmt.Println(echo)
-	}
-
+	fmt.Println(strings.Join(args, " "))
 }
 
 func command_type(args []string) {
@@ -118,4 +111,36 @@ func is_executable(path string) (string, bool) {
 	} else {
 		return full_path, true
 	}
+}
+
+func parseInput(input string) []string {
+	var args []string
+	var current strings.Builder
+	inQuotes := false
+
+	for _, r := range input {
+		switch r {
+		case '"':
+			inQuotes = !inQuotes
+
+		case ' ':
+			if inQuotes {
+				current.WriteRune(r)
+			} else {
+				if current.Len() > 0 {
+					args = append(args, current.String())
+					current.Reset()
+				}
+			}
+
+		default:
+			current.WriteRune(r)
+		}
+	}
+
+	if current.Len() > 0 {
+		args = append(args, current.String())
+	}
+
+	return args
 }
